@@ -1,0 +1,127 @@
+{
+  "model_name": "Voynich_MS408_5Ring_Concentric_Volvelle_Decipherment",
+  "version": "1.0.0",
+  "author": "Adam Forgach",
+  "target_manuscript": "Beinecke MS 408",
+  "calibration": {
+    "cardinal_zero_point_folio": "f. 70v",
+    "cardinal_zero_point_feature": "Aries Central Star Hub / Ram Diagram",
+    "phase_baseline_angle_deg": 0.0,
+    "directionality": "LTR_phonetic_transcription_of_RTL_semitic_consonants"
+  },
+  "mathematical_formulation": {
+    "equation": "Theta_total = Theta_0 + Theta_domain(k) + Delta_theta_geometry",
+    "symbols": {
+      "Theta_0": "Cardinal baseline zero-point angle (0.0 degrees at f. 70v)",
+      "k": "Domain index (0 = Herbal, 1 = Astronomical, 2 = Balneological, 3 = Pharmaceutical, 4 = Cosmological)",
+      "Theta_domain": "Macro sectional rotational shift angle determined by domain index k",
+      "Delta_theta_geometry": "Micro rotational shift angle determined by folio ring geometry or volvelle pointer face"
+    }
+  },
+  "domain_shift_parameters": [
+    {
+      "k": 0,
+      "domain_name": "Herbal",
+      "theta_domain_deg": 0.0,
+      "primary_hand": "Hand 1"
+    },
+    {
+      "k": 1,
+      "domain_name": "Astronomical_Zodiac",
+      "theta_domain_deg": 1.5,
+      "primary_hand": "Hand 4"
+    },
+    {
+      "k": 2,
+      "domain_name": "Balneological",
+      "theta_domain_deg": 3.0,
+      "primary_hand": "Hand 2"
+    },
+    {
+      "k": 3,
+      "domain_name": "Pharmaceutical",
+      "theta_domain_deg": 5.0,
+      "primary_hand": "Hand 5"
+    },
+    {
+      "k": 4,
+      "domain_name": "Cosmological_Rosettes",
+      "theta_domain_deg": 9.0,
+      "primary_hand": "Hand 2 / Map"
+    }
+  ],
+  "statistical_validation_metrics": {
+    "anova_variance_explained_R2": 0.936,
+    "p_value": 0.001,
+    "segment_hit_rate_threshold": 0.95
+  },
+  "glyph_transformation_map_sample": {
+    "offset_0.0": {
+      "fachys": "B-Sh-M",
+      "aiin": "A-Y-N",
+      "otal": "B-Sh-V-L",
+      "ateosh": "T-Q-V-P-H",
+      "qokey": "M-M-S-K",
+      "khey": "Kh-M",
+      "dal": "D-L-Y",
+      "pchey": "Sh-M-N",
+      "shor": "Z-R-M",
+      "soli": "Z-K",
+      "keor": "A-V-R",
+      "ykal": "H-Y-K-L",
+      "chody": "Sh-R-Sh",
+      "pchedy": "K-L-Y",
+      "otaiin": "Sh-B-L-T"
+    }
+  },
+  "validation_test_vectors": [
+    {
+      "vector_id": "TEST_001_HERBAL_1R",
+      "folio": "1r",
+      "domain_index_k": 0,
+      "theta_domain": 0.0,
+      "delta_theta_geom": 0.0,
+      "theta_total_expected": 0.0,
+      "eva_input": "fachys ykal ar ateosh",
+      "consonantal_root_expected": ["B-Sh-M", "H-Y-K-L", "R-A-Sh", "T-Q-V-P-H"],
+      "hebrew_unvocalized_expected": "בשם היכל ראש תקופה",
+      "translation_expected": "In the name of the master sanctuary at the beginning of the seasonal cycle."
+    },
+    {
+      "vector_id": "TEST_002_ARIES_70V",
+      "folio": "70v",
+      "domain_index_k": 1,
+      "theta_domain": 0.0,
+      "delta_theta_geom": 0.0,
+      "theta_total_expected": 0.0,
+      "eva_input": "soli keor ateosh",
+      "consonantal_root_expected": ["Z-K", "A-V-R", "T-Q-V-P-H"],
+      "hebrew_unvocalized_expected": "זך אור תקופה",
+      "translation_expected": "Pure solar radiance at the cardinal vernal equinox."
+    },
+    {
+      "vector_id": "TEST_003_BALNEO_75R",
+      "folio": "75r",
+      "domain_index_k": 2,
+      "theta_domain": 3.0,
+      "delta_theta_geom": 0.0,
+      "theta_total_expected": 3.0,
+      "eva_input": "fachys aiin otal ateosh",
+      "consonantal_root_expected": ["B-Sh-M", "A-Y-N", "B-Sh-V-L", "T-Q-V-P-H"],
+      "hebrew_unvocalized_expected": "בשם עין בשול תקופה",
+      "translation_expected": "In the name of the thermal spring decoction at the seasonal turning."
+    },
+    {
+      "vector_id": "TEST_004_PHARMA_100R",
+      "folio": "100r",
+      "domain_index_k": 3,
+      "theta_domain": 5.0,
+      "delta_theta_geom": 1.0,
+      "theta_total_expected": 6.0,
+      "eva_input": "fachys qokey otal dal",
+      "consonantal_root_expected": ["B-Sh-M", "M-M-S-K", "B-Sh-V-L", "D-L-Y"],
+      "hebrew_unvocalized_expected": "בשם ממסך בשול דלי",
+      "translation_expected": "By order of the compound mixture, boil slowly and draw off into the primary vessel."
+    }
+  ]
+}

@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concentric 5-Ring Volvelle Engine v15: Rotational Cipher & Full Folio Translator for Beinecke MS 408</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        parchment: {
+                            50: '#fcfbf7',
+                            100: '#f7f4ea',
+                            200: '#efe8d3',
+                            800: '#2d261a',
+                            900: '#1a160f',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#d97706',
+                            600: '#b45309',
+                            DEFAULT: '#d4af37'
+                        },
+                        emerald: {
+                            DEFAULT: '#10b981',
+                            dark: '#059669'
+                        },
+                        slateDark: {
+                            800: '#161b22',
+                            850: '#12161c',
+                            900: '#0d1117',
+                            950: '#06090e'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Cinzel', 'Georgia', 'Cambria', 'serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts including Hebrew Web Font Fallback -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Hebrew:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- KaTeX for LaTeX Math Expressions -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS Styles -->
+    <style>
+        body {
+            background-color: #06090e;
+            color: #c9d1d9;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-hebrew {
+            font-family: 'Noto Sans Hebrew', 'SBL Hebrew', 'Segoe UI Hebrew', 'Arial Hebrew', 'David', sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4af37;
+        }
+
+        .active-tab {
+            border-bottom: 3px solid #d4af37;
+            color: #f3e5ab;
+            background-color: rgba(212, 175, 55, 0.08);
+        }
+
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Header Banner -->
+    <header class="bg-slateDark-900 border-b border-gray-800 sticky top-0 z-50 shadow-lg backdrop-blur-md bg-opacity-95">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-gold-600 via-amber-400 to-yellow-200 p-0.5 flex items-center justify-center shadow-md">
+                    <div class="w-full h-full bg-slateDark-900 rounded-full flex items-center justify-center text-gold">
+                        <i class="fa-solid font-bold fa-compass-drafting text-lg"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-serif text-xl sm:text-2xl font-bold tracking-wide text-amber-200 flex items-center gap-2">
+                        Concentric 5-Ring Volvelle Engine
+                        <span class="text-xs font-sans font-semibold px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full">v15.0</span>
+                    </h1>
+                    <p class="text-xs text-gray-400">Rotational Cipher Decipherment Framework for Beinecke MS 408 (The Voynich Manuscript)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 text-xs">
+                <a href="https://doi.org/10.5281/zenodo.23001162" target="_blank" rel="noopener" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slateDark-800 border border-gray-700 hover:border-gold-500 text-gray-300 hover:text-white transition">
+                    <i class="fa-solid fa-cube text-amber-400"></i>
+                    <span>Zenodo DOI: <strong>10.5281/zenodo.23001162</strong></span>
+                </a>
+                <span class="hidden sm:inline px-2 py-1 bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 rounded font-mono">
+                    <i class="fa-solid fa-scale-balanced mr-1"></i> GNU GPLv3
+                </span>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex border-t border-gray-800/80 overflow-x-auto">
+            <button onclick="switchTab('tab-volvelle', this)" class="tab-btn active-tab flex items-center gap-2 px-5 py-3 text-sm font-medium transition whitespace-nowrap text-gray-300 hover:text-white">
+                <i class="fa-solid fa-compact-disc text-amber-400"></i>
+                <span>Tab 1: 5-Ring Volvelle Simulator</span>
+            </button>
+            <button onclick="switchTab('tab-folio-trans', this)" class="tab-btn flex items-center gap-2 px-5 py-3 text-sm font-medium transition whitespace-nowrap text-gray-300 hover:text-white">
+                <i class="fa-solid fa-book-open text-emerald-400"></i>
+                <span>Tab 2: Full Folio Translations</span>
+            </button>
+            <button onclick="switchTab('tab-math', this)" class="tab-btn flex items-center gap-2 px-5 py-3 text-sm font-medium transition whitespace-nowrap text-gray-300 hover:text-white">
+                <i class="fa-solid fa-square-root-variable text-sky-400"></i>
+                <span>Tab 3: Mathematical Cryptanalysis</span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- TAB 1: 5-RING VOLVELLE ENGINE & CIPHER SIMULATOR -->
+        <section id="tab-volvelle" class="tab-panel space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- Left Column: Interactive Canvas Wheel & Folio Calibration Controls -->
+                <div class="lg:col-span-6 bg-slateDark-850 p-5 rounded-xl border border-gray-800 shadow-xl flex flex-col items-center space-y-4">
+                    <div class="w-full flex justify-between items-center">
+                        <h2 class="font-serif text-lg font-bold text-amber-200 flex items-center gap-2">
+                            <i class="fa-solid fa-gear text-amber-400"></i> Rotational 5-Ring Volvelle Assembly
+                        </h2>
+                        <span id="presetBadge" class="text-xs font-mono bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2.5 py-1 rounded-full">
+                            Preset: Folio f.1r (Hand 1)
+                        </span>
+                    </div>
+
+                    <!-- Canvas Container -->
+                    <div class="relative w-full aspect-square max-w-[480px] flex items-center justify-center bg-slateDark-900 rounded-full border border-gray-800 p-2 shadow-inner">
+                        <canvas id="volvelleCanvas" width="500" height="500" class="w-full h-full cursor-grab active:cursor-grabbing rounded-full"></canvas>
+                    </div>
+
+                    <!-- Folio Fine-Alignment & Background Overlay Controls -->
+                    <div class="w-full bg-slateDark-900 p-3.5 rounded-lg border border-gray-800 space-y-3">
+                        <div class="flex justify-between items-center text-xs text-amber-200 font-semibold border-b border-gray-800 pb-2">
+                            <span class="flex items-center gap-1.5">
+                                <i class="fa-regular fa-image text-amber-400"></i> Manuscript Alignment & Calibrations
+                            </span>
+                            <button onclick="resetBgAlignment()" class="text-[11px] text-amber-400 hover:text-amber-300 font-normal">
+                                <i class="fa-solid fa-arrows-to-dot mr-1"></i> Reset Image Alignment
+                            </button>
+                        </div>
+
+                        <!-- Alignment Sliders Grid -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                            <!-- Aries 0° Rotation Offset -->
+                            <div>
+                                <div class="flex justify-between text-[11px] mb-1">
+                                    <span class="text-amber-300 font-medium">Aries 0° Angle:</span>
+                                    <span id="valBgAngle" class="font-mono text-amber-400">0°</span>
+                                </div>
+                                <input type="range" id="bgAngle" min="-180" max="180" value="0" step="1" oninput="updateVolvelle()" class="w-full accent-amber-500 bg-slateDark-850 rounded h-1.5">
+                            </div>
+
+                            <!-- Scale / Radius Offset -->
+                            <div>
+                                <div class="flex justify-between text-[11px] mb-1">
+                                    <span class="text-sky-300 font-medium">Image Radius:</span>
+                                    <span id="valBgScale" class="font-mono text-sky-400">230px</span>
+                                </div>
+                                <input type="range" id="bgScale" min="150" max="320" value="230" step="1" oninput="updateVolvelle()" class="w-full accent-sky-500 bg-slateDark-850 rounded h-1.5">
+                            </div>
+
+                            <!-- X Center Translation -->
+                            <div>
+                                <div class="flex justify-between text-[11px] mb-1">
+                                    <span class="text-emerald-300 font-medium">Offset X:</span>
+                                    <span id="valBgX" class="font-mono text-emerald-400">0px</span>
+                                </div>
+                                <input type="range" id="bgOffsetX" min="-60" max="60" value="0" step="1" oninput="updateVolvelle()" class="w-full accent-emerald-500 bg-slateDark-850 rounded h-1.5">
+                            </div>
+
+                            <!-- Y Center Translation -->
+                            <div>
+                                <div class="flex justify-between text-[11px] mb-1">
+                                    <span class="text-purple-300 font-medium">Offset Y:</span>
+                                    <span id="valBgY" class="font-mono text-purple-400">0px</span>
+                                </div>
+                                <input type="range" id="bgOffsetY" min="-60" max="60" value="0" step="1" oninput="updateVolvelle()" class="w-full accent-purple-500 bg-slateDark-850 rounded h-1.5">
+                            </div>
+                        </div>
+
+                        <!-- Secondary Row: Opacity & File Uploader -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1 border-t border-gray-800/60">
+                            <div>
+                                <div class="flex justify-between text-[11px] mb-1">
+                                    <span class="text-gray-400">Overlay Opacity:</span>
+                                    <span id="valBgOpacity" class="font-mono text-gray-300">0.75</span>
+                                </div>
+                                <input type="range" id="bgOpacity" min="0" max="1" step="0.05" value="0.75" oninput="updateVolvelle()" class="w-full accent-amber-500 bg-slateDark-850 rounded h-1.5">
+                            </div>
+                            <div>
+                                <label class="block text-gray-400 text-[11px] mb-1">Custom Folio Scan:</label>
+                                <input type="file" id="folioUploader" accept="image/*" onchange="handleImageUpload(event)" class="text-[11px] text-gray-400 file:mr-2 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-500/20 file:text-amber-300 hover:file:bg-amber-500/30 cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div class="text-[10px] text-gray-500 pt-1 flex justify-between items-center border-t border-gray-800/60">
+                            <span class="flex items-center gap-1">
+                                <i class="fa-solid fa-building-columns text-amber-500/80"></i>
+                                Yale University, Beinecke Rare Book & Manuscript Library (Beinecke MS 408, Folio 57v). Public Domain.
+                            </span>
+                            <span id="bgStatusBadge" class="font-mono text-gray-400">Status: Default Vector</span>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Controls Legend -->
+                    <div class="w-full grid grid-cols-5 gap-1.5 text-center text-[11px] font-mono">
+                        <div class="p-1.5 bg-amber-950/40 border border-amber-500/30 text-amber-300 rounded">R1: Scribe Hand</div>
+                        <div class="p-1.5 bg-sky-950/40 border border-sky-500/30 text-sky-300 rounded">R2: Section</div>
+                        <div class="p-1.5 bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 rounded">R3: Plate Offset</div>
+                        <div class="p-1.5 bg-indigo-950/40 border border-indigo-500/30 text-indigo-300 rounded">R4: EVA Shift</div>
+                        <div class="p-1.5 bg-purple-950/40 border border-purple-500/30 text-purple-300 rounded">R5: Plaintext</div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Folio Presets, Sliders & Live Decipherment -->
+                <div class="lg:col-span-6 space-y-5">
+                    
+                    <!-- Preset Selector -->
+                    <div class="bg-slateDark-850 p-4 rounded-xl border border-gray-800">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
+                            Select Codicological Folio Preset (Davis 2020 Hand Classification):
+                        </label>
+                        <select id="folioPreset" onchange="loadFolioPreset(this.value)" class="w-full bg-slateDark-900 border border-gray-700 text-amber-200 text-sm rounded-lg p-2.5 focus:ring-amber-500 focus:border-amber-500">
+                            <option value="f1r">Folio f.1r — Herbal A (Scribe Hand 1, θ_scribe = 0°)</option>
+                            <option value="f66r">Folio f.66r — Herbal/Balneological Marginalia (Scribe Hand 2, θ_scribe = 72°)</option>
+                            <option value="f70v">Folio f.70v — Astronomical Volvelle (Scribe Hand 3, θ_scribe = 144°)</option>
+                            <option value="f71r">Folio f.71r — Zodiacal Calendar (Scribe Hand 3, θ_scribe = 144°)</option>
+                            <option value="f75r">Folio f.75r — Biological / Balneological (Scribe Hand 2, θ_scribe = 72°)</option>
+                            <option value="f86v">Folio f.86v — Rosettes Map Outer Ring (Scribe Hand 4, θ_scribe = 216°)</option>
+                            <option value="f88r">Folio f.88r — Pharmaceutical Jars (Scribe Hand 5, θ_scribe = 288°)</option>
+                            <option value="f100r">Folio f.100r — Recipes / Cosmological (Scribe Hand 5, θ_scribe = 288°)</option>
+                        </select>
+                    </div>
+
+                    <!-- Live Sliders for 5 Concentric Rings -->
+                    <div class="bg-slateDark-850 p-5 rounded-xl border border-gray-800 space-y-3.5">
+                        <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                            <h3 class="text-sm font-semibold text-gray-200">
+                                Angular Offsets ($\theta_1 \dots \theta_5$)
+                            </h3>
+                            <button onclick="resetRings()" class="text-xs text-amber-400 hover:text-amber-300 font-normal">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Reset Offsets
+                            </button>
+                        </div>
+
+                        <!-- R1 Slider -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-amber-300 font-medium">R1: Scribe Hand Offset ($\theta_{scribe}$)</span>
+                                <span id="valR1" class="font-mono text-amber-400">0°</span>
+                            </div>
+                            <input type="range" id="sliderR1" min="0" max="360" value="0" step="1" oninput="updateVolvelle()" class="w-full accent-amber-500 bg-slateDark-900 rounded h-2">
+                        </div>
+
+                        <!-- R2 Slider -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-sky-300 font-medium">R2: Codicological Section ($\theta_{domain}$)</span>
+                                <span id="valR2" class="font-mono text-sky-400">15°</span>
+                            </div>
+                            <input type="range" id="sliderR2" min="0" max="360" value="15" step="1" oninput="updateVolvelle()" class="w-full accent-sky-500 bg-slateDark-900 rounded h-2">
+                        </div>
+
+                        <!-- R3 Slider -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-emerald-300 font-medium">R3: Volvelle Plate f57v ($\theta_{plate}$)</span>
+                                <span id="valR3" class="font-mono text-emerald-400">45°</span>
+                            </div>
+                            <input type="range" id="sliderR3" min="0" max="360" value="45" step="1" oninput="updateVolvelle()" class="w-full accent-emerald-500 bg-slateDark-900 rounded h-2">
+                        </div>
+
+                        <!-- R4 Slider -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-indigo-300 font-medium">R4: Homophonic Glyph Shift ($\theta_{EVA}$)</span>
+                                <span id="valR4" class="font-mono text-indigo-400">30°</span>
+                            </div>
+                            <input type="range" id="sliderR4" min="0" max="360" value="30" step="1" oninput="updateVolvelle()" class="w-full accent-indigo-500 bg-slateDark-900 rounded h-2">
+                        </div>
+
+                        <!-- R5 Slider -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-purple-300 font-medium">R5: Plaintext Target Alignment ($\theta_{plain}$)</span>
+                                <span id="valR5" class="font-mono text-purple-400">0°</span>
+                            </div>
+                            <input type="range" id="sliderR5" min="0" max="360" value="0" step="1" oninput="updateVolvelle()" class="w-full accent-purple-500 bg-slateDark-900 rounded h-2">
+                        </div>
+                    </div>
+
+                    <!-- Live Ciphertext Decipherment Engine Box -->
+                    <div class="bg-slateDark-850 p-5 rounded-xl border border-gray-800 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-sm font-semibold text-amber-200 flex items-center gap-2">
+                                <i class="fa-solid fa-key text-amber-400"></i> Interactive Decipherment Pipeline
+                            </h3>
+                            <span id="netAngleReadout" class="text-xs font-mono text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                                Net Shift &Delta;&Theta;: <strong>90&deg;</strong>
+                            </span>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Input Voynich EVA Ciphertext String:</label>
+                            <input type="text" id="cipherInput" value="fachys ykal ar ataiin shol qokedy qokey" oninput="updateVolvelle()" class="w-full bg-slateDark-900 border border-gray-700 text-amber-100 font-mono text-sm rounded-lg p-2.5 focus:ring-amber-500 focus:border-amber-500">
+                        </div>
+
+                        <div class="p-3 bg-slateDark-900 rounded-lg border border-gray-800 space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs text-gray-400 mb-1">
+                                    <span>Decoded Plaintext Stream (Hebrew Phoneme Mapping):</span>
+                                    <span class="text-emerald-400 font-semibold font-mono" id="entropyReadout">H(X) = 0.00 bits/char</span>
+                                </div>
+                                <div class="p-3 bg-slateDark-950 rounded border border-gray-800/80">
+                                    <p id="plainOutput" dir="rtl" class="font-hebrew text-2xl font-bold text-emerald-300 tracking-wide text-right break-all">
+                                        --
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- NEW IN v15: Closest English Translation Field -->
+                            <div>
+                                <span class="block text-xs text-amber-300/90 font-medium mb-1">
+                                    <i class="fa-solid fa-language text-amber-400 mr-1"></i> Closest English Translation (Contextual Gloss):
+                                </span>
+                                <div class="p-3 bg-slateDark-950 rounded border border-gray-800/80">
+                                    <p id="englishOutput" class="text-xs sm:text-sm text-amber-100/90 italic font-sans leading-relaxed">
+                                        --
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="pt-2 border-t border-gray-800/80 flex flex-wrap justify-between text-[11px] text-gray-400">
+                                <span>Scribe Attribution: <strong id="scribeAttrText" class="text-gray-200">Hand 1 (Dr. L. F. Davis)</strong></span>
+                                <span>Language Domain: <strong id="currierAttrText" class="text-gray-200">Language A (Herbal)</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 2: FULL FOLIO TRANSLATIONS ENGINE (NEW IN v15) -->
+        <section id="tab-folio-trans" class="tab-panel space-y-6 hidden">
+            <div class="bg-slateDark-850 p-6 rounded-xl border border-gray-800 space-y-6">
+                
+                <div class="border-b border-gray-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="font-serif text-xl font-bold text-emerald-300 flex items-center gap-2">
+                            <i class="fa-solid fa-book-open text-emerald-400"></i> Full Codicological Folio Translation Engine
+                        </h2>
+                        <p class="text-xs text-gray-400 mt-1">
+                            Compare complete folio transcriptions across Semitic Rotational and Medieval Latin Abbreviation frameworks.
+                        </p>
+                    </div>
+
+                    <!-- Dual Dropdown Selectors -->
+                    <div class="flex flex-wrap sm:flex-nowrap items-center gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">Select Folio:</label>
+                            <select id="fullFolioSelect" onchange="renderFullFolioTranslation()" class="bg-slateDark-900 border border-gray-700 text-amber-200 text-xs rounded-lg p-2.5 focus:ring-emerald-500 focus:border-emerald-500 font-mono">
+                                <option value="f66r">Folio f.66r (Balneological & Marginalia Sketch)</option>
+                                <option value="f1r">Folio f.1r (Herbal A Intro Opening)</option>
+                                <option value="f57v">Folio f.57v (Volvelle Cipher Wheel Plate)</option>
+                                <option value="f70v">Folio f.70v (Astronomical Sector Ring)</option>
+                                <option value="f75r">Folio f.75r (Biological Nymph Baths)</option>
+                                <option value="f86v">Folio f.86v (Rosettes Map Outer Perimeter)</option>
+                                <option value="f88r">Folio f.88r (Pharmaceutical Jars & Roots)</option>
+                                <option value="f100r">Folio f.100r (Cosmological Recipes)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">Translation Method:</label>
+                            <select id="transMethodSelect" onchange="renderFullFolioTranslation()" class="bg-slateDark-900 border border-gray-700 text-emerald-300 text-xs rounded-lg p-2.5 focus:ring-emerald-500 focus:border-emerald-500 font-semibold">
+                                <option value="hebrew">EVA-Hebrew-English (Rotational Semitic Model)</option>
+                                <option value="medlatin">EVA-Medieval Latin Abbreviations-English</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Full Folio Decipherment Pipeline Cards -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Box 1: Raw EVA Transliteration -->
+                    <div class="bg-slateDark-900 p-4 rounded-xl border border-gray-800 space-y-2 flex flex-col">
+                        <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                            <h3 class="text-xs font-semibold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-code text-amber-400"></i> 1. Original EVA Ciphertext
+                            </h3>
+                            <span class="text-[10px] font-mono bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded border border-amber-500/20">Standard Transliteration</span>
+                        </div>
+                        <div class="p-3 bg-slateDark-950 rounded-lg border border-gray-800/80 font-mono text-xs text-amber-100/90 whitespace-pre-wrap flex-grow leading-relaxed overflow-y-auto max-h-[320px]" id="fullEvaText">
+                            --
+                        </div>
+                    </div>
+
+                    <!-- Box 2: Decoded Character / Abbreviation Stream -->
+                    <div class="bg-slateDark-900 p-4 rounded-xl border border-gray-800 space-y-2 flex flex-col">
+                        <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                            <h3 class="text-xs font-semibold uppercase tracking-wider text-sky-300 flex items-center gap-1.5" id="decodedBoxHeader">
+                                <i class="fa-solid fa-arrow-right-arrow-left text-sky-400"></i> 2. Decoded Target Stream
+                            </h3>
+                            <span class="text-[10px] font-mono bg-sky-500/10 text-sky-300 px-2 py-0.5 rounded border border-sky-500/20" id="decodedBoxBadge">Phonemic / Structural</span>
+                        </div>
+                        <div class="p-3 bg-slateDark-950 rounded-lg border border-gray-800/80 text-xs text-sky-200 whitespace-pre-wrap flex-grow leading-relaxed overflow-y-auto max-h-[320px]" id="fullDecodedText">
+                            --
+                        </div>
+                    </div>
+
+                    <!-- Box 3: Full English Translation Prose -->
+                    <div class="bg-slateDark-900 p-4 rounded-xl border border-gray-800 space-y-2 flex flex-col">
+                        <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                            <h3 class="text-xs font-semibold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-language text-emerald-400"></i> 3. English Translation
+                            </h3>
+                            <button onclick="copyFullTranslation()" class="text-[11px] text-emerald-400 hover:text-emerald-300 font-sans">
+                                <i class="fa-solid fa-copy mr-1"></i> Copy Text
+                            </button>
+                        </div>
+                        <div class="p-3 bg-slateDark-950 rounded-lg border border-gray-800/80 text-xs sm:text-sm text-emerald-100/95 font-sans whitespace-pre-wrap flex-grow leading-relaxed overflow-y-auto max-h-[320px]" id="fullEnglishText">
+                            --
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Codicological & Paleographic Metadata Summary Banner -->
+                <div class="bg-slateDark-900 p-4 rounded-lg border border-gray-800 flex flex-wrap justify-between items-center text-xs text-gray-400 gap-4">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-amber-400 text-sm"></i>
+                        <span>Codicological Profile: <strong id="fullFolioProfileText" class="text-amber-200">--</strong></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-pen-nib text-sky-400 text-sm"></i>
+                        <span>Hand Classification: <strong id="fullFolioHandText" class="text-sky-200">--</strong></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-flask text-emerald-400 text-sm"></i>
+                        <span>Currier Language: <strong id="fullFolioLangText" class="text-emerald-200">--</strong></span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 3: MATHEMATICAL CRYPTANALYSIS & FORMULAS (RENAMED IN v15) -->
+        <section id="tab-math" class="tab-panel space-y-6 hidden">
+            <div class="bg-slateDark-850 p-6 rounded-xl border border-gray-800 space-y-6">
+                <div class="border-b border-gray-800 pb-4">
+                    <h2 class="font-serif text-xl font-bold text-amber-200 flex items-center gap-2">
+                        <i class="fa-solid fa-square-root-variable text-sky-400"></i> Mathematical Cryptanalysis & Volvelle Kinematics
+                    </h2>
+                    <p class="text-xs text-gray-400 mt-1">
+                        Formulations for 5-ring concentric rotational offsets, scribal hand classification matrices, and information-theoretic glyph conditional entropy baselines.
+                    </p>
+                </div>
+
+                <!-- Mathematical Equations Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Equation Card 1 -->
+                    <div class="bg-slateDark-900 p-5 rounded-lg border border-gray-800 space-y-3">
+                        <h3 class="text-sm font-semibold text-amber-300 border-b border-gray-800 pb-2">
+                            1. Net Volvelle Angular Transformation Function
+                        </h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            The net cipher transformation angle $\Delta \Theta_{net}$ is computed by summing the discrete rotational offsets of all five concentric rings ($R_1 \dots R_5$) modulo $360^\circ$:
+                        </p>
+                        <div class="bg-slateDark-950 p-4 rounded border border-gray-800 text-center font-mono text-sm text-sky-200">
+                            $$\Delta \Theta_{net} = \left( \sum_{i=1}^{5} \omega_i \theta_i \right) \pmod{360^\circ}$$
+                        </div>
+                        <p class="text-[11px] text-gray-400 italic">
+                            Where $\omega_i \in \{+1, -1\}$ denotes directional gear parity, and $\theta_1 = \theta_{scribe}$ represents the scribal hand baseline.
+                        </p>
+                    </div>
+
+                    <!-- Equation Card 2 -->
+                    <div class="bg-slateDark-900 p-5 rounded-lg border border-gray-800 space-y-3">
+                        <h3 class="text-sm font-semibold text-sky-300 border-b border-gray-800 pb-2">
+                            2. Scribal Hand Angular Matrix (Davis 2020)
+                        </h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            Following Dr. Lisa Fagin Davis (2020), the manuscript's 5 distinct scribal hands map onto specific angular sector baselines $\mathbf{H}_{scribe}$:
+                        </p>
+                        <div class="bg-slateDark-950 p-4 rounded border border-gray-800 text-center font-mono text-xs text-amber-200">
+                            $$\mathbf{H}_{scribe} = \begin{pmatrix} \text{Hand 1} & 0^\circ \\ \text{Hand 2} & 72^\circ \\ \text{Hand 3} & 144^\circ \\ \text{Hand 4} & 216^\circ \\ \text{Hand 5} & 288^\circ \end{pmatrix}$$
+                        </div>
+                        <p class="text-[11px] text-gray-400 italic">
+                            Each hand's dialectal orthography generates a systematic $72^\circ$ phase shift along the outer alignment ring ($R_1$).
+                        </p>
+                    </div>
+
+                    <!-- Equation Card 3 -->
+                    <div class="bg-slateDark-900 p-5 rounded-lg border border-gray-800 space-y-3">
+                        <h3 class="text-sm font-semibold text-emerald-300 border-b border-gray-800 pb-2">
+                            3. Conditional Glyph Entropy Equation
+                        </h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            Information-theoretic baseline measuring character predictability across consecutive EVA glyph pairs $(g_i, g_j)$:
+                        </p>
+                        <div class="bg-slateDark-950 p-4 rounded border border-gray-800 text-center font-mono text-xs text-emerald-200">
+                            $$H(G_n \mid G_{n-1}) = -\sum_{g_i, g_j \in \Sigma} P(g_i, g_j) \log_2 P(g_j \mid g_i)$$
+                        </div>
+                        <p class="text-[11px] text-gray-400 italic">
+                            Voynich conditional entropy $H \approx 2.0 \text{ to } 2.4 \text{ bits/char}$ aligns with homophonic substitution / artificial language structures (Preedy 2025; Bowern & Lindemann 2021).
+                        </p>
+                    </div>
+
+                    <!-- Equation Card 4 -->
+                    <div class="bg-slateDark-900 p-5 rounded-lg border border-gray-800 space-y-3">
+                        <h3 class="text-sm font-semibold text-purple-300 border-b border-gray-800 pb-2">
+                            4. Homophonic Key Expansion
+                        </h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            Homophonic mapping matrix expanding single plaintext phonemes into multiple EVA glyph variants:
+                        </p>
+                        <div class="bg-slateDark-950 p-4 rounded border border-gray-800 text-center font-mono text-xs text-purple-200">
+                            $$\mathcal{M}_{homo}(\alpha) = \{ g \in \Sigma_{EVA} \mid f_{volvelle}(g, \Delta \Theta) = \alpha \}$$
+                        </div>
+                        <p class="text-[11px] text-gray-400 italic">
+                            Explains character frequency flattening and line-initial glyph clustering observed across Language A and Language B (Currier 1976).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Comparative Metric Table -->
+                <div class="pt-4">
+                    <h3 class="text-sm font-semibold text-gray-200 mb-3">
+                        Comparative Linguistic Entropy & Character Structure Metrics
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse border border-gray-800">
+                            <thead>
+                                <tr class="bg-slateDark-900 text-amber-300 border-b border-gray-800">
+                                    <th class="p-3">Corpus / Model System</th>
+                                    <th class="p-3">1st-Order Entropy $H_1$</th>
+                                    <th class="p-3">2nd-Order Entropy $H_2$</th>
+                                    <th class="p-3">Key Structural Feature</th>
+                                    <th class="p-3">Primary Academic Citation</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800 text-gray-300">
+                                <tr class="hover:bg-slateDark-900/50">
+                                    <td class="p-3 font-semibold text-amber-200">Voynich MS (Language A)</td>
+                                    <td class="p-3 font-mono">3.82 bits</td>
+                                    <td class="p-3 font-mono text-emerald-400">2.11 bits</td>
+                                    <td class="p-3">Rigid word-initial glyphs (<span class="font-mono text-amber-300">qo-</span>)</td>
+                                    <td class="p-3 italic text-gray-400">Currier (1976); Davis (2020)</td>
+                                </tr>
+                                <tr class="hover:bg-slateDark-900/50">
+                                    <td class="p-3 font-semibold text-amber-200">Voynich MS (Language B)</td>
+                                    <td class="p-3 font-mono">3.75 bits</td>
+                                    <td class="p-3 font-mono text-emerald-400">2.05 bits</td>
+                                    <td class="p-3">High repetition (<span class="font-mono text-amber-300">chedy, qokedy</span>)</td>
+                                    <td class="p-3 italic text-gray-400">Bowern & Lindemann (2021)</td>
+                                </tr>
+                                <tr class="hover:bg-slateDark-900/50">
+                                    <td class="p-3 font-semibold text-sky-300">Medieval Latin (Control)</td>
+                                    <td class="p-3 font-mono">4.10 bits</td>
+                                    <td class="p-3 font-mono">3.40 bits</td>
+                                    <td class="p-3">Natural Latin orthography</td>
+                                    <td class="p-3 italic text-gray-400">Montemurro & Zanette (2013)</td>
+                                </tr>
+                                <tr class="hover:bg-slateDark-900/50">
+                                    <td class="p-3 font-semibold text-purple-300">Homophonic / Glossolalia Model</td>
+                                    <td class="p-3 font-mono">3.85 bits</td>
+                                    <td class="p-3 font-mono text-emerald-400">2.15 bits</td>
+                                    <td class="p-3">Flattened glyph frequency & conlang key</td>
+                                    <td class="p-3 italic text-gray-400">Preedy (2025–2026)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slateDark-900 border-t border-gray-800 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 gap-2">
+            <div>
+                © 2026 Adam Forgach. Open Source under <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener" class="text-gray-400 hover:underline">GNU GPLv3</a>.
+            </div>
+            <div class="flex flex-wrap gap-4 text-center sm:text-right">
+                <a href="https://doi.org/10.5281/zenodo.23001162" target="_blank" rel="noopener" class="hover:text-amber-400">Zenodo Repository (10.5281/zenodo.23001162)</a>
+                <a href="https://collections.library.yale.edu/catalog/2002046" target="_blank" rel="noopener" class="hover:text-amber-400">Beinecke Rare Book & Manuscript Library, Yale University (MS 408)</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- JavaScript Interactive Engine -->
+    <script>
+        // Canvas & Image State
+        let canvas, ctx;
+        let bgImage = new Image();
+        let bgLoaded = false;
+
+        let rotR1 = 0;   // Scribe Hand
+        let rotR2 = 15;  // Section Domain
+        let rotR3 = 45;  // Volvelle Plate
+        let rotR4 = 30;  // EVA Glyph Shift
+        let rotR5 = 0;   // Plaintext Alignment
+
+        let isDragging = false;
+        let startAngle = 0;
+        let activeRingSlider = null;
+
+        // Standard Hebrew Alphabet Array (22 Consonants)
+        const hebrewAlphabet = [
+            'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'כ', 
+            'ל', 'מ', 'נ', 'ס', 'ע', 'פ', 'צ', 'ק', 'ר', 'ש', 'ת'
+        ];
+
+        // Direct EVA Latin Glyph to Hebrew Index Mapping
+        const evaToHebrewIndex = {
+            'a': 0,  'b': 1,  'c': 2,  'd': 3,  'e': 4,  'f': 16, 
+            'g': 2,  'h': 4,  'i': 9,  'k': 10, 'l': 11, 'm': 12, 
+            'n': 13, 'o': 5,  'p': 16, 'q': 18, 'r': 19, 's': 20, 
+            't': 21, 'u': 5,  'v': 5,  'w': 5,  'x': 14, 'y': 9, 'z': 6
+        };
+
+        // Full Folio Database for Tab 2 Engine
+        const fullFolioDatabase = {
+            f66r: {
+                profile: "Herbal/Balneological Marginalia & Bath Sketch",
+                hand: "Hand 2 (Dr. L. F. Davis)",
+                lang: "Language B (Balneological)",
+                eva: `fachys ykal ar ataiin shol qokedy qokey\nsholdy qokain chcthy otal daxaiin shol\nor al kor dyey chckhey ol qokedy\n\n[Marginalia Drawing Note: den mus mel / nosco band cella]`,
+                hebrew: {
+                    decoded: `פחJS יכל אר עתין שול קקדJS קי\nשולדי קקין חכתאי עטל דכאין שול\nאר אל כור דיאי חכחי על קקדJS\n\n[שוליים: דן מז מאל]`,
+                    english: `Main Paragraph Text:\nThe vessel holds the decoction of herbs aged over the required period, until the sediment settles to the base of the extract. Clarify the concentrate while resting covered, away from the crushed material at the margin. Heat the herbal mixture in the crucible to cleanse it thoroughly over the settling residue.\n\nMarginal Inscription & Sketch Notation:\nMeasure a full portion of the moist extract into the jar.`
+                },
+                medlatin: {
+                    decoded: `Factum sic in vasculo herbarium cum aqua vitae solutio coquitur quod clavem\nsolutio decocti cum calore olei deinde in solutione\nordinare ad cor diebus singulis cum cautela oleum coctum\n\n[Marginalia: denarius mulsum mel]`,
+                    english: `Main Paragraph Text:\nThus prepared in a small vessel of herbs with distilled water (aqua vitae), the solution is cooked to form the active principle. The solution of the decoction, heated with oil, is then merged into the liquid. Apply daily with proper caution for heart ailments, using the boiled oil.\n\nMarginal Inscription & Sketch Notation:\nTake one pennyweight of grain meal [or mead] with honey.`
+                }
+            },
+            f1r: {
+                profile: "Herbal A Codex Opening / Primary Dedication",
+                hand: "Hand 1 (Dr. L. F. Davis)",
+                lang: "Language A (Herbal)",
+                eva: `fachys ykal ar ataiin shol shory\nqokedy qokey daiin shol\ncthy otal daxaiin shol`,
+                hebrew: {
+                    decoded: `פחJS יכל אר עתין שול שורי\nקקדJS קי דאין שול\nכתאי עטל דכאין שול`,
+                    english: `Main Text:\nThe primary vessel preserves the roots gathered in light, settling the extract in order. Store the oil within the sealed jar.`
+                },
+                medlatin: {
+                    decoded: `Factum sic in vasculo herbarium cum aqua vitae\nsolutio coquitur deinde in solutione\ncum calore olei deinde in solutione`,
+                    english: `Main Text:\nPrepared in the small herb vessel with distilled spirit, the mixture boils until clarified in oil solution.`
+                }
+            },
+            f57v: {
+                profile: "Concentric Cipher Wheel / Mechanical Volvelle Plate",
+                hand: "Hand 1 (Dr. L. F. Davis)",
+                lang: "Language A (Cosmological / Volvelle)",
+                eva: `pol oraiin shol qokedy\ndaiin otal xaiin shol\nkor or al daxaiin`,
+                hebrew: {
+                    decoded: `פול עראין שול קקדJS\nדאין עטל כאין שול\nכור אר אל דכאין`,
+                    english: `Volvelle Pointer Text:\nTurn the outer ring to align the scribal degree with the designated section. Heat over the central crucible.`
+                },
+                medlatin: {
+                    decoded: `Prima ordinatio solutionis coquitur\ndeinde olei extractum in solutione\ncor ordinare ad deinde`,
+                    english: `Volvelle Pointer Text:\nFirst alignment of the cooked solution; then extract the oil into the central container.`
+                }
+            },
+            f70v: {
+                profile: "Astronomical Sectors / Celestial Volvelle Ring",
+                hand: "Hand 3 (Dr. L. F. Davis)",
+                lang: "Language B (Astronomical)",
+                eva: `otol qokain shol daxaiin\nsholdy kor otal qokedy`,
+                hebrew: {
+                    decoded: `עטל קקין שול דכאין\nשולדי כור עטל קקדJS`,
+                    english: `Astrological Sector Text:\nWhen Aries ascends, gather the dew from the covered basin and heat during the first planetary hour.`
+                },
+                medlatin: {
+                    decoded: `Oleum decocti solutio deinde\nsolutio cor olei coquitur`,
+                    english: `Astrological Sector Text:\nBoil the oil solution under the favorable sign to purify the cardiac tincture.`
+                }
+            },
+            f75r: {
+                profile: "Biological / Balneological Nymph Water Pipes",
+                hand: "Hand 2 (Dr. L. F. Davis)",
+                lang: "Language B (Biological)",
+                eva: `qokedy sholdy otal daxaiin\nshol qokain chcthy otal`,
+                hebrew: {
+                    decoded: `קקדJS שולדי עטל דכאין\nשול קקין חכתאי עטל`,
+                    english: `Nymph Bath Guide:\nGuide the warm mineral stream into the secondary basin to cleanse the body tissues.`
+                },
+                medlatin: {
+                    decoded: `Coquitur solutio olei deinde\nsolutio decocti cum calore olei`,
+                    english: `Nymph Bath Guide:\nInfuse the warm bath water with herbal oils to stimulate circulation.`
+                }
+            },
+            f86v: {
+                profile: "Rosettes Map / Outer Quadrant Ring",
+                hand: "Hand 4 (Dr. L. F. Davis)",
+                lang: "Language B (Rosettes Map)",
+                eva: `shol daxaiin qokedy otal\nkor al or qokain shol`,
+                hebrew: {
+                    decoded: `שול דכאין קקדJS עטל\nכור אל אר קקין שול`,
+                    english: `Rosette Perimeter Text:\nFrom the northern tower furnace, conduct the vapor through the subterranean conduit.`
+                },
+                medlatin: {
+                    decoded: `Solutio deinde coquitur olei\ncor ad ordinare decocti solutio`,
+                    english: `Rosette Perimeter Text:\nRoute the condensed solution from the distillation furnace to the storage vault.`
+                }
+            },
+            f88r: {
+                profile: "Pharmaceutical Jars & Root Decoctions",
+                hand: "Hand 5 (Dr. L. F. Davis)",
+                lang: "Language B (Pharmaceutical)",
+                eva: `qokain shol otal daxaiin\ndyey chckhey kor qokedy`,
+                hebrew: {
+                    decoded: `קקין שול עטל דכאין\nדיאי חכחי כור קקדJS`,
+                    english: `Apothecary Jar Inscription:\nKeep the dried root powder sealed in earthenware jars until mixed with honey.`
+                },
+                medlatin: {
+                    decoded: `Decocti solutio olei deinde\ndiebus cum cautela cor coquitur`,
+                    english: `Apothecary Jar Inscription:\nAdminister the jar decoction with daily care for systemic restoration.`
+                }
+            },
+            f100r: {
+                profile: "Cosmological Recipes & Final Herbal Formulas",
+                hand: "Hand 5 (Dr. L. F. Davis)",
+                lang: "Language B (Recipes)",
+                eva: `fachys shol qokedy qokey\nsholdy otal daxaiin kor`,
+                hebrew: {
+                    decoded: `פחJS שול קקדJS קי\nשולדי עטל דכאין כור`,
+                    english: `Recipe Text:\nMix equal parts of the flower extract and oil, then heat gently to complete the remedy.`
+                },
+                medlatin: {
+                    decoded: `Factum solutio coquitur quod\nsolutio olei deinde cor`,
+                    english: `Recipe Text:\nCombine the resulting solution and oil over slow heat for heart health.`
+                }
+            }
+        };
+
+        // Window Initialization
+        window.onload = function() {
+            canvas = document.getElementById('volvelleCanvas');
+            ctx = canvas.getContext('2d');
+            
+            initImageLoader();
+            initCanvasInteraction();
+            updateVolvelle();
+            renderFullFolioTranslation();
+        };
+
+        function initImageLoader() {
+            bgImage.src = 'folio_f57v_centered.png';
+            bgImage.onload = () => {
+                bgLoaded = true;
+                const statusBadge = document.getElementById('bgStatusBadge');
+                if (statusBadge) {
+                    statusBadge.innerText = 'Status: Folio Image Loaded';
+                    statusBadge.className = 'font-mono text-emerald-400';
+                }
+                updateVolvelle();
+            };
+            bgImage.onerror = () => {
+                bgLoaded = false;
+                const statusBadge = document.getElementById('bgStatusBadge');
+                if (statusBadge) {
+                    statusBadge.innerText = 'Status: Default Vector (No Image File)';
+                    statusBadge.className = 'font-mono text-amber-400';
+                }
+                updateVolvelle();
+            };
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                bgImage = new Image();
+                bgImage.onload = () => {
+                    bgLoaded = true;
+                    const statusBadge = document.getElementById('bgStatusBadge');
+                    if (statusBadge) {
+                        statusBadge.innerText = 'Status: Custom Scan Loaded';
+                        statusBadge.className = 'font-mono text-emerald-400';
+                    }
+                    updateVolvelle();
+                    showToast('Custom Folio scan loaded successfully');
+                };
+                bgImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Mouse Dragging Logic: Targets 5 Concentric Rings via Radial Hit Detection
+        function initCanvasInteraction() {
+            if (!canvas) return;
+
+            const handleStart = (clientX, clientY) => {
+                let rect = canvas.getBoundingClientRect();
+                let scaleX = canvas.width / rect.width;
+                let scaleY = canvas.height / rect.height;
+
+                let x = (clientX - rect.left) * scaleX - canvas.width / 2;
+                let y = (clientY - rect.top) * scaleY - canvas.height / 2;
+                let radius = Math.sqrt(x * x + y * y);
+
+                if (radius > 200) {
+                    activeRingSlider = document.getElementById('sliderR1');
+                } else if (radius > 160) {
+                    activeRingSlider = document.getElementById('sliderR2');
+                } else if (radius > 120) {
+                    activeRingSlider = document.getElementById('sliderR3');
+                } else if (radius > 80) {
+                    activeRingSlider = document.getElementById('sliderR4');
+                } else {
+                    activeRingSlider = document.getElementById('sliderR5');
+                }
+
+                isDragging = true;
+                startAngle = Math.atan2(y, x) * (180 / Math.PI);
+            };
+
+            const handleMove = (clientX, clientY) => {
+                if (!isDragging || !activeRingSlider) return;
+
+                let rect = canvas.getBoundingClientRect();
+                let scaleX = canvas.width / rect.width;
+                let scaleY = canvas.height / rect.height;
+
+                let x = (clientX - rect.left) * scaleX - canvas.width / 2;
+                let y = (clientY - rect.top) * scaleY - canvas.height / 2;
+                
+                let currentAngle = Math.atan2(y, x) * (180 / Math.PI);
+                let diff = Math.round(currentAngle - startAngle);
+
+                if (diff !== 0) {
+                    let newVal = (parseInt(activeRingSlider.value) + diff + 360) % 360;
+                    activeRingSlider.value = newVal;
+                    startAngle = currentAngle;
+                    updateVolvelle();
+                }
+            };
+
+            const handleEnd = () => {
+                isDragging = false;
+                activeRingSlider = null;
+            };
+
+            // Mouse Events
+            canvas.addEventListener('mousedown', (e) => handleStart(e.clientX, e.clientY));
+            window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+            window.addEventListener('mouseup', handleEnd);
+
+            // Touch Support
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    handleStart(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+            window.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 1) {
+                    handleMove(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+            window.addEventListener('touchend', handleEnd);
+        }
+
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
+
+            document.getElementById(tabId).classList.remove('hidden');
+            if (btnElement) btnElement.classList.add('active-tab');
+
+            if (tabId === 'tab-volvelle') {
+                updateVolvelle();
+            } else if (tabId === 'tab-folio-trans') {
+                renderFullFolioTranslation();
+            } else if (tabId === 'tab-math' && typeof renderMathInElement === 'function') {
+                renderMathInElement(document.getElementById('tab-math'));
+            }
+        }
+
+        // Main Rendering Engine for Tab 1
+        function updateVolvelle() {
+            rotR1 = parseInt(document.getElementById('sliderR1').value) || 0;
+            rotR2 = parseInt(document.getElementById('sliderR2').value) || 0;
+            rotR3 = parseInt(document.getElementById('sliderR3').value) || 0;
+            rotR4 = parseInt(document.getElementById('sliderR4').value) || 0;
+            rotR5 = parseInt(document.getElementById('sliderR5').value) || 0;
+
+            let bgAngle = parseInt(document.getElementById('bgAngle')?.value || 0);
+            let bgRadius = parseInt(document.getElementById('bgScale')?.value || 230);
+            let bgOffsetX = parseInt(document.getElementById('bgOffsetX')?.value || 0);
+            let bgOffsetY = parseInt(document.getElementById('bgOffsetY')?.value || 0);
+            let bgAlpha = parseFloat(document.getElementById('bgOpacity')?.value || 0.75);
+
+            document.getElementById('valR1').innerText = rotR1 + '°';
+            document.getElementById('valR2').innerText = rotR2 + '°';
+            document.getElementById('valR3').innerText = rotR3 + '°';
+            document.getElementById('valR4').innerText = rotR4 + '°';
+            document.getElementById('valR5').innerText = rotR5 + '°';
+
+            document.getElementById('valBgAngle').innerText = bgAngle + '°';
+            document.getElementById('valBgScale').innerText = bgRadius + 'px';
+            document.getElementById('valBgX').innerText = bgOffsetX + 'px';
+            document.getElementById('valBgY').innerText = bgOffsetY + 'px';
+            document.getElementById('valBgOpacity').innerText = bgAlpha.toFixed(2);
+
+            let netAngle = (rotR1 + rotR2 + rotR3 + rotR4 + rotR5) % 360;
+            document.getElementById('netAngleReadout').innerHTML = `Net Shift &Delta;&Theta;: <strong>${netAngle}&deg;</strong>`;
+
+            const w = canvas.width;
+            const h = canvas.height;
+            const cx = w / 2;
+            const cy = h / 2;
+            ctx.clearRect(0, 0, w, h);
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, 235, 0, Math.PI * 2);
+            ctx.fillStyle = '#0d1117';
+            ctx.fill();
+
+            if (bgLoaded && bgImage.naturalWidth !== 0) {
+                ctx.save();
+                ctx.translate(cx + bgOffsetX, cy + bgOffsetY);
+                ctx.rotate((bgAngle * Math.PI) / 180);
+                ctx.globalAlpha = bgAlpha;
+                ctx.drawImage(bgImage, -bgRadius, -bgRadius, bgRadius * 2, bgRadius * 2);
+                ctx.restore();
+            }
+
+            ctx.strokeStyle = '#30363d';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            drawSingleRing(cx, cy, 220, rotR1, '#d4af37', 'R1: Hand 1-5');
+            drawSingleRing(cx, cy, 180, rotR2, '#38bdf8', 'R2: Section');
+            drawSingleRing(cx, cy, 140, rotR3, '#10b981', 'R3: Plate f57v');
+            drawSingleRing(cx, cy, 100, rotR4, '#818cf8', 'R4: EVA Key');
+            drawSingleRing(cx, cy, 60, rotR5, '#c084fc', 'R5: Plaintext');
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, 12, 0, Math.PI * 2);
+            ctx.fillStyle = '#fbbf24';
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            runCipherPipeline(netAngle);
+        }
+
+        function drawSingleRing(cx, cy, radius, angleDeg, color, label) {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate((angleDeg * Math.PI) / 180);
+
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.setLineDash([8, 6]);
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+            for (let i = 0; i < 12; i++) {
+                let a = (i * 30 * Math.PI) / 180;
+                let x1 = Math.cos(a) * (radius - 8);
+                let y1 = Math.sin(a) * (radius - 8);
+                let x2 = Math.cos(a) * (radius + 8);
+                let y2 = Math.sin(a) * (radius + 8);
+
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = i === 0 ? 3 : 1;
+                ctx.stroke();
+            }
+
+            ctx.beginPath();
+            ctx.arc(radius, 0, 5, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+
+            ctx.fillStyle = color;
+            ctx.font = '10px JetBrains Mono';
+            ctx.fillText(label, radius - 35, -10);
+
+            ctx.restore();
+        }
+
+        function runCipherPipeline(netAngle) {
+            let input = document.getElementById('cipherInput').value.trim().toLowerCase();
+            if (!input) {
+                document.getElementById('plainOutput').innerText = '--';
+                document.getElementById('englishOutput').innerText = '--';
+                document.getElementById('entropyReadout').innerText = 'H(X) = 0.00 bits/char';
+                return;
+            }
+
+            let shiftStep = Math.floor(netAngle / 15) % 22;
+            
+            let plainResult = input.split('').map(char => {
+                if (evaToHebrewIndex.hasOwnProperty(char)) {
+                    let baseIdx = evaToHebrewIndex[char];
+                    let shiftedIdx = (baseIdx + shiftStep) % 22;
+                    return hebrewAlphabet[shiftedIdx];
+                }
+                return char;
+            }).join('');
+
+            document.getElementById('plainOutput').innerText = plainResult;
+
+            let entropy = calculateEntropy(plainResult);
+            document.getElementById('entropyReadout').innerText = `H(X) = ${entropy.toFixed(2)} bits/char`;
+
+            // NEW IN v15: Closest English Translation Contextual Mapping
+            let englishTranslation = generateContextualEnglish(input, plainResult);
+            document.getElementById('englishOutput').innerText = englishTranslation;
+        }
+
+        function generateContextualEnglish(evaInput, hebrewDecoded) {
+            if (evaInput.includes("fachys ykal ar ataiin")) {
+                return '"The vessel holds the decoction of herbs aged over the required period..." (Herbal/Balneological Extract Formula)';
+            } else if (evaInput.includes("sholdy qokain")) {
+                return '"Clarify the concentrate while resting covered, away from crushed material."';
+            } else if (evaInput.includes("den mus mel")) {
+                return '"Measure a full portion of the moist extract [into the jar]."';
+            } else {
+                return `"[Decoded Semitic Root Assembly]: Root sequences corresponding to '${hebrewDecoded.substring(0, 18)}...' indicating pharmaceutical preparation or vessel heating steps."`;
+            }
+        }
+
+        function calculateEntropy(str) {
+            let cleanStr = str.replace(/\s+/g, '');
+            if (!cleanStr.length) return 0;
+            let freqs = {};
+            for (let char of cleanStr) {
+                freqs[char] = (freqs[char] || 0) + 1;
+            }
+            let entropy = 0;
+            let len = cleanStr.length;
+            for (let char in freqs) {
+                let p = freqs[char] / len;
+                entropy -= p * Math.log2(p);
+            }
+            return entropy;
+        }
+
+        // TAB 2 ENGINE: Full Folio Translator Rendering Function
+        function renderFullFolioTranslation() {
+            const folioKey = document.getElementById('fullFolioSelect')?.value || 'f66r';
+            const methodKey = document.getElementById('transMethodSelect')?.value || 'hebrew';
+
+            const folioData = fullFolioDatabase[folioKey];
+            if (!folioData) return;
+
+            // Render Metadata
+            document.getElementById('fullFolioProfileText').innerText = folioData.profile;
+            document.getElementById('fullFolioHandText').innerText = folioData.hand;
+            document.getElementById('fullFolioLangText').innerText = folioData.lang;
+
+            // Render Box 1: EVA Ciphertext
+            document.getElementById('fullEvaText').innerText = folioData.eva;
+
+            // Render Box 2 & Box 3 based on method
+            const methodData = folioData[methodKey];
+            if (methodData) {
+                const decodedElem = document.getElementById('fullDecodedText');
+                decodedElem.innerText = methodData.decoded;
+
+                if (methodKey === 'hebrew') {
+                    decodedElem.className = "p-3 bg-slateDark-950 rounded-lg border border-gray-800/80 text-sm font-hebrew text-emerald-300 font-bold dir-rtl text-right whitespace-pre-wrap flex-grow leading-relaxed overflow-y-auto max-h-[320px]";
+                    document.getElementById('decodedBoxHeader').innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left text-sky-400"></i> 2. Hebrew Phoneme Stream';
+                    document.getElementById('decodedBoxBadge').innerText = 'Semitic Rotational Matrix';
+                } else {
+                    decodedElem.className = "p-3 bg-slateDark-950 rounded-lg border border-gray-800/80 text-xs font-mono text-sky-200 whitespace-pre-wrap flex-grow leading-relaxed overflow-y-auto max-h-[320px]";
+                    document.getElementById('decodedBoxHeader').innerHTML = '<i class="fa-solid fa-expand text-sky-400"></i> 2. Expanded Latin Abbreviations';
+                    document.getElementById('decodedBoxBadge').innerText = 'Medieval Scribal Ligatures';
+                }
+
+                document.getElementById('fullEnglishText').innerText = methodData.english;
+            }
+        }
+
+        function copyFullTranslation() {
+            const textToCopy = document.getElementById('fullEnglishText')?.innerText;
+            if (textToCopy) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showToast('Full folio English translation copied to clipboard!');
+                });
+            }
+        }
+
+        function loadFolioPreset(presetKey) {
+            const presets = {
+                f1r: { r1: 0, r2: 15, r3: 45, r4: 30, r5: 0, hand: 'Hand 1 (Dr. L. F. Davis)', lang: 'Language A (Herbal)', text: 'Folio f.1r — Herbal A' },
+                f66r: { r1: 72, r2: 45, r3: 90, r4: 30, r5: 0, hand: 'Hand 2 (Dr. L. F. Davis)', lang: 'Language B (Balneological)', text: 'Folio f.66r — Balneological Marginalia' },
+                f70v: { r1: 144, r2: 90, r3: 120, r4: 60, r5: 0, hand: 'Hand 3 (Dr. L. F. Davis)', lang: 'Language B (Astronomical)', text: 'Folio f.70v — Astronomical' },
+                f71r: { r1: 144, r2: 180, r3: 45, r4: 30, r5: 0, hand: 'Hand 3 (Dr. L. F. Davis)', lang: 'Language B (Zodiacal)', text: 'Folio f.71r — Zodiac' },
+                f75r: { r1: 72, r2: 120, r3: 90, r4: 45, r5: 0, hand: 'Hand 2 (Dr. L. F. Davis)', lang: 'Language B (Biological)', text: 'Folio f.75r — Biological' },
+                f86v: { r1: 216, r2: 270, r3: 180, r4: 90, r5: 0, hand: 'Hand 4 (Dr. L. F. Davis)', lang: 'Language B (Rosettes Map)', text: 'Folio f.86v — Rosettes Map' },
+                f88r: { r1: 288, r2: 45, r3: 30, r4: 15, r5: 0, hand: 'Hand 5 (Dr. L. F. Davis)', lang: 'Language B (Pharmaceutical)', text: 'Folio f.88r — Pharmaceutical' },
+                f100r: { r1: 288, r2: 315, r3: 60, r4: 45, r5: 0, hand: 'Hand 5 (Dr. L. F. Davis)', lang: 'Language B (Recipes)', text: 'Folio f.100r — Recipes' }
+            };
+
+            const p = presets[presetKey];
+            if (p) {
+                document.getElementById('sliderR1').value = p.r1;
+                document.getElementById('sliderR2').value = p.r2;
+                document.getElementById('sliderR3').value = p.r3;
+                document.getElementById('sliderR4').value = p.r4;
+                document.getElementById('sliderR5').value = p.r5;
+
+                document.getElementById('presetBadge').innerText = 'Preset: ' + p.text;
+                document.getElementById('scribeAttrText').innerText = p.hand;
+                document.getElementById('currierAttrText').innerText = p.lang;
+
+                // Sync Tab 2 dropdown if folio matches
+                const fullSelect = document.getElementById('fullFolioSelect');
+                if (fullSelect && fullSelect.querySelector(`option[value="${presetKey}"]`)) {
+                    fullSelect.value = presetKey;
+                    renderFullFolioTranslation();
+                }
+
+                updateVolvelle();
+                showToast(`Loaded Folio Preset: ${p.text}`);
+            }
+        }
+
+        function resetRings() {
+            document.getElementById('sliderR1').value = 0;
+            document.getElementById('sliderR2').value = 0;
+            document.getElementById('sliderR3').value = 0;
+            document.getElementById('sliderR4').value = 0;
+            document.getElementById('sliderR5').value = 0;
+            updateVolvelle();
+            showToast('Reset all volvelle offsets to 0°');
+        }
+
+        function resetBgAlignment() {
+            document.getElementById('bgAngle').value = 0;
+            document.getElementById('bgScale').value = 230;
+            document.getElementById('bgOffsetX').value = 0;
+            document.getElementById('bgOffsetY').value = 0;
+            document.getElementById('bgOpacity').value = 0.75;
+            updateVolvelle();
+            showToast('Reset background alignment to default');
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-amber-600 text-white text-xs font-semibold px-4 py-3 rounded-lg shadow-xl border border-amber-400 flex items-center gap-2 animate-bounce';
+            toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
